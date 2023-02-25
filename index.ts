@@ -27,6 +27,18 @@ async function createTodo() {
     start();
 }
 
+function viewTodos() {
+    if (!todo.length) {
+        console.log('No todos!');
+    } else {
+        console.log(`No. | Id | Name | Status`);
+        todo.forEach((t, i) => {
+            console.log(`${i + 1}. | ${t.id} | ${t.name} | ${t.status}`);
+        });
+    }
+    start();
+}
+
 async function updateStatus() {
     const answer = await inquirer.prompt([
         {
@@ -35,6 +47,7 @@ async function updateStatus() {
             message: "Enter Task id that you want to update status of"
         }
     ]);
+    answer.id = answer.id.trim();
     if (!answer.id) updateStatus();
     else if (todo.findIndex(item => item.id === answer.id)) { console.log('No Task found with this Id. Try again!'); updateStatus(); }
     else {
@@ -53,6 +66,7 @@ async function deleteTodo() {
             message: "Enter Task id that you want to delete"
         }
     ]);
+    answer.id = answer.id.trim();
     if (!answer.id) deleteTodo();
     else if (todo.findIndex(item => item.id === answer.id)) { console.log('No Task found with this Id. Try again!'); deleteTodo(); }
     else {
@@ -69,13 +83,16 @@ function start() {
         {
             type: 'list',
             name: 'nextAction',
-            choices: ['Create Todo', 'Update Status', 'Delete Todo', 'Exit'],
+            choices: ['Create Todo', 'View Todos', 'Update Status', 'Delete Todo', 'Exit'],
             message: "Choose action that you'd like to perfrom"
         }
     ]).then(res => {
         switch (res.nextAction) {
             case "Create Todo":
                 createTodo();
+                break;
+            case "View Todos":
+                viewTodos();
                 break;
             case "Update Status":
                 updateStatus();
@@ -88,4 +105,5 @@ function start() {
         }
     })
 }
+
 start();
